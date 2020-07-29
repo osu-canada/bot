@@ -1,76 +1,52 @@
 const Discord = require('discord.js');
-const config = require('./config.json').discord;
-const client = new Discord.Client();
+const mongoose = require('mongoose');
+const fs = require('fs');
+const { prefix, auth } = require('./config.json');
 
 const { BanchoClient } = require('bancho.js');
-const creds = require('./config.json').bancho;
-const bancho = new BanchoClient({
-	username: creds.username,
-	password: creds.password
+
+mongoose.connect(auth.mongo, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true
 });
 
-const linkStore = new Discord.Collection();
+const bancho = new BanchoClient({
+	username: auth.banchousr,
+	password: auth.banchopass
+});
 
-const { v4: uuidv4 } = require('uuid');
+const client = new Discord.Client();
+const commands = new Discord.Collection();
 
-// Discord shit
+const commandFiles = fs.readdirSync('./commands').filter((file) => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	commands.set(command.name, command);
+}
+
 client.once('ready', () => {
 	console.log(`Connected to Discord as ${client.user.tag}`);
 });
 
 client.on('message', (message) => {
-	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-	const args = message.content.slice(config.prefix.length).trim().split(/ +/);
-	const command = args.shift().toLowerCase();
+	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const commandName = args.shift().toLowerCase();
 
-	switch (command) {
-		case 'link':
-			if (message.channel.type !== 'dm') return;
-			let code = uuidv4();
-			linkStore.set(code, { user: message.author.id, time: Date.now() });
-			message.channel.send(
-				`In order to link your account, please open osu! and DM **Eton4446** with \`!link ${code}\`. This code will expire in 5 minutes.`
-			);
-			break;
+	if (!commands.has(commandName)) return;
+
+	const command = commands.get(commandName);
+
+	if (command.dmOnly && message.channel.type !== 'dm') return;
+
+	try {
+		command.execute(message, args);
+	} catch (error) {
+		console.error(error);
+		message.reply('there was an error trying to execute that command!');
 	}
 });
 
-// Bancho Shit
-bancho.on('connected', () => {
-	console.log('Connected to Bancho!');
-});
-
-bancho.on('PM', (message) => {
-	if (message.user.ircUsername == creds.username) return;
-	if (!message.message.startsWith(creds.prefix)) return;
-
-	const args = message.message.slice(creds.prefix.length).split(/ +/);
-	const command = args.shift().toLowerCase();
-
-	console.log(`[${message.user.ircUsername}] ${message.message}`);
-
-	switch (command) {
-		case 'link':
-			if (!args[0]) return message.user.sendMessage('You must provide a code!');
-			if (!linkStore.has(args[0])) return message.user.sendMessage('Invalid code provided!');
-			let data = linkStore.get(args[0]);
-			if (Date.now() - data.time > config.tokenTimeout) {
-				linkStore.delete(args[0]);
-				message.user.sendMessage(
-					'The code you provided has expired, please DM osu!canada bot to get a new code!'
-				);
-				return;
-			}
-			let guild = client.guilds.cache.find((g) => g.id == config.guild);
-			let usr = guild.members.cache.find((u) => u.user.id == data.id);
-			usr.setNickname(message.user.ircUsername);
-			message.user.sendMessage(
-				`Successfully linked osu! account ${message.user.ircUsername} to Discord account ${usr.user.tag}.`
-			);
-	}
-});
-
-// Connections
-client.login(config.token);
-bancho.connect();
+client.login(auth.discord);
