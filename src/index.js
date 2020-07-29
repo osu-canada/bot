@@ -28,6 +28,7 @@ db.once('open', () => {
 
 discord.once('ready', () => {
 	MasterGuild = discord.guilds.cache.find((g) => g.id == guild);
+	discord.user.setActivity({ type: 'WATCHING', name: 'canadians click circles!' });
 	console.log('Connected to Discord!');
 });
 
