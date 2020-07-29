@@ -41,7 +41,13 @@ discord.on('message', async (message) => {
 
 	if (command == 'verify') {
 		let accLink = await AccountLink.exists({ discord: message.author.id });
-		if (accLink) return message.channel.send(`This discord account is already linked to a osu! account.`);
+		if (accLink) {
+			console.log(
+				`[Discord] (${message.author
+					.tag}) Attempted to generate verification token, but account was already linked.`
+			);
+			return message.channel.send(`This discord account is already linked to a osu! account.`);
+		}
 
 		let existingToken = await TokenStore.exists({ _id: message.author.id });
 		if (existingToken) {
@@ -62,6 +68,9 @@ discord.on('message', async (message) => {
 					);
 				});
 			} else {
+				console.log(
+					`[Discord] (${message.author.tag}) Requested a verification token, but a valid one already existed.`
+				);
 				let token = await TokenStore.findOne({ _id: message.author.id });
 				message.channel.send(`You already have a verification token. It is \`${prefix}verify ${token.token}\``);
 				return;
