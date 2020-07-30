@@ -35,7 +35,7 @@ discord.once('ready', () => {
 discord.on('guildMemberRemove', async (member) => {
 	if (!AccountLink.exists({ discord: member.id })) return;
 	await AccountLink.deleteOne({ discord: member.id });
-	console.log(`[Discord] (${message.author.tag}) Account link deleted, member left server.`);
+	console.log(`[Discord] (${member.user.tag}) Account link deleted, member left server.`);
 });
 
 discord.on('message', async (message) => {
