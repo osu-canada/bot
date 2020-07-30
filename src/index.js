@@ -32,6 +32,12 @@ discord.once('ready', () => {
 	console.log('Connected to Discord!');
 });
 
+discord.on('guildMemberRemove', async (member) => {
+	if (!AccountLink.exists({ discord: member.id })) return;
+	await AccountLink.deleteOne({ discord: member.id });
+	console.log(`[Discord] (${message.author.tag}) Account link deleted, member left server.`);
+});
+
 discord.on('message', async (message) => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 	if (message.channel.type !== 'dm') return;
