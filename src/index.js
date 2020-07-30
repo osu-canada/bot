@@ -4,6 +4,8 @@ const Mongoose = require('mongoose');
 const Moment = require('moment');
 const { v4: uuid } = require('uuid');
 
+console.log(`osu!canada bot v${process.env.npm_package_version}`);
+
 const AccountLink = require('./models/accountLink');
 const TokenStore = require('./models/tokenStore');
 const { prefix, auth, tokenTimeout, guild } = require('./config.json');
