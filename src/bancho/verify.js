@@ -55,6 +55,7 @@ module.exports = {
 			}
 
 			await AccountLink.create({ discord: user.id, osu: message.user.id });
+			await user.setNickname(message.user.username);
 			await user.roles.add('738629598270586920');
 			if (message.user.country == 'CA') await user.roles.add('737836870687391814');
 			if (message.user.pprank <= 5000) await user.roles.add('738541473414250506');

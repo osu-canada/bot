@@ -43,6 +43,11 @@ discord.once('ready', () => {
 });
 bancho.once('connected', () => logger.info('Connection to Bancho established!'));
 
+discord.on('guildMemberRemove', async (member) => {
+	await database.AccountLink.destroy({ where: { discord: member.id } });
+	logger.info(`Member Left (${member.user.tag}): Removed link from database.`);
+});
+
 discord.on('message', (message) => {
 	if (!message.content.startsWith(Cfg.prefix) || message.author.bot) return;
 
