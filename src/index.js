@@ -178,7 +178,8 @@ bancho.on('PM', async (message) => {
 			);
 			await TokenStore.deleteOne({ token: token });
 			await discordUser.setNickname(user.username, `Linked to osu! account ${user.username}`);
-			await discordUser.roles.add('737836870687391814');
+			await discordUser.roles.add('737836870687391814'); // verified canadian
+			await discordUser.roles.add('738629598270586920'); // osu!access
 			message.user.sendMessage(
 				`Successfully linked osu! user "${user.username}" to Discord user "${discordUser.user.tag}".`
 			);
