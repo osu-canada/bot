@@ -37,7 +37,10 @@ database.connection
 	})
 	.catch((err) => logger.error('Database connection error:', err));
 
-discord.once('ready', () => logger.info('Connection to Discord established!'));
+discord.once('ready', () => {
+	discord.user.setActivity({ type: 'WATCHING', name: `Circle Clickers - v${process.env.npm_package_version}` });
+	logger.info('Connection to Discord established!');
+});
 bancho.once('connected', () => logger.info('Connection to Bancho established!'));
 
 discord.on('message', (message) => {
