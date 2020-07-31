@@ -7,7 +7,8 @@
 	"license": "MIT",
 	"private": false,
 	"scripts": {
-		"test": "cd src && node ."
+		"test": "cd src && node .",
+		"start": "cd src && PRODUCTION=true node ."
 	},
 	"dependencies": {
 		"bancho.js": "^0.9.7",
