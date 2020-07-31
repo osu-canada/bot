@@ -29,10 +29,11 @@ for (const file of banchoCommands) {
 
 database.connection
 	.authenticate()
-	.then(() => {
+	.then(async () => {
+		await database.connection.sync();
 		logger.info('Connection to database established!');
-		discord.login(Cfg.discordToken);
-		bancho.connect();
+		await discord.login(Cfg.discordToken);
+		await bancho.connect();
 	})
 	.catch((err) => logger.error('Database connection error:', err));
 
@@ -42,7 +43,7 @@ bancho.once('connected', () => logger.info('Connection to Bancho established!'))
 discord.on('message', (message) => {
 	if (!message.content.startsWith(Cfg.prefix) || message.author.bot) return;
 
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const args = message.content.slice(Cfg.prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
 	if (!discord.commands.has(commandName)) return;
@@ -51,7 +52,10 @@ discord.on('message', (message) => {
 
 	if (command.dmOnly && message.channel.type !== 'dm') return;
 
+	if (command.adminOnly && message.author.id !== Cfg.dev) return;
+
 	try {
+		logger.debug(`Command Executed (${message.author.tag}):`, command.name, args);
 		command.execute(message, args, database);
 	} catch (error) {
 		logger.error(`Command Execution (${commandName}):`, error);
@@ -59,11 +63,11 @@ discord.on('message', (message) => {
 	}
 });
 
-bancho.on('DM', (message) => {
+bancho.on('PM', (message) => {
 	if (message.user.ircUsername == Cfg.bancho.username) return;
-	if (!message.message.content.startsWith(Cfg.prefix)) return;
+	if (!message.message.startsWith(Cfg.prefix)) return;
 
-	const args = message.message.content.slice(prefix.length).trim().split(/ +/);
+	const args = message.message.slice(Cfg.prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
 	if (!bancho.commands.has(commandName)) return;
@@ -73,7 +77,8 @@ bancho.on('DM', (message) => {
 	if (command.dmOnly && message.channel.type !== 'dm') return;
 
 	try {
-		command.execute(message, database);
+		logger.debug(`Command Executed (${message.user.ircUsername}):`, command.name, args);
+		command.execute(message, args, database, discord);
 	} catch (error) {
 		logger.error(`Command Execution (${commandName}):`, error);
 		message.user.sendMessage('[osu!canada Bot] An error occured, please contact **Eton#4446**.');
