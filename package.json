@@ -1,28 +1,28 @@
 {
-	"name": "bot",
-	"version": "2.2.0",
-	"main": "index.js",
-	"repository": "git@github.com:osu-canada/bot.git",
-	"author": "<ethamitc (ethamitc@gmail.com)>",
-	"license": "MIT",
-	"private": false,
-	"scripts": {
-		"test": "cd src && node .",
-		"start": "cd src && PRODUCTION=true node ."
-	},
-	"dependencies": {
-		"bancho.js": "^0.9.7",
-		"canvas": "^2.6.1",
-		"canvas-constructor": "^4.1.0",
-		"discord.js": "^12.2.0",
-		"errorsparty.dev-bitfield": "^2.0.0",
-		"ihacks-log": "^0.2.7",
-		"jsonwebtoken": "^8.5.1",
-		"log4js": "^6.3.0",
-		"mariadb": "^2.4.2",
-		"moment": "^2.27.0",
-		"node-fetch": "^2.6.0",
-		"sequelize": "^6.3.3",
-		"uuid": "^8.3.0"
-	}
+    "name": "bot",
+    "version": "2.2.0",
+    "main": "index.js",
+    "repository": "git@github.com:osu-canada/bot.git",
+    "author": "<ethamitc (ethamitc@gmail.com)>",
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+        "test": "cd src && node .",
+        "production": "cd src && PRODUCTION=true node ."
+    },
+    "dependencies": {
+        "bancho.js": "^0.9.7",
+        "canvas": "^2.6.1",
+        "canvas-constructor": "^4.1.0",
+        "discord.js": "^12.2.0",
+        "errorsparty.dev-bitfield": "^2.0.0",
+        "ihacks-log": "^0.2.7",
+        "jsonwebtoken": "^8.5.1",
+        "log4js": "^6.3.0",
+        "mariadb": "^2.4.2",
+        "moment": "^2.27.0",
+        "node-fetch": "^2.6.0",
+        "sequelize": "^6.3.3",
+        "uuid": "^8.3.0"
+    }
 }
