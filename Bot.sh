@@ -6,6 +6,10 @@ echo "Node.js $(node --version)"
 echo "NPM $(npm --version)"
 echo "$(lsb_release -d)"
 
+echo "Pulling latest changes from GitHub!"
+git pull >/dev/null 2>&1
+echo "Done!"
+
 if [ "$1" == "-p" ]; then
     echo "Starting in production mode"
     echo "Installing NPM Modules"
