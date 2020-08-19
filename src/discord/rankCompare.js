@@ -50,7 +50,7 @@ module.exports = {
 			.addField(`Rank Difference`, `${rankCompare > 0 ? '+' : ''}${addCommas(rankCompare)}`, true)
 			.addField(`${data2.username}'s Rank`, `#${addCommas(compare.usr2.rank)}`, true)
 			.addField(`${data1.username}'s pp`, `${addCommas(compare.usr1.pp)} pp`, true)
-			.addField(`Rank Difference`, `${ppCompare > 0 ? '+' : ''}${addCommas(ppCompare)} pp`, true)
+			.addField(`pp Difference`, `${ppCompare > 0 ? '+' : ''}${addCommas(ppCompare)} pp`, true)
 			.addField(`${data2.username}'s pp`, `${addCommas(compare.usr2.pp)} pp`, true);
 
 		message.channel.send(embed);
